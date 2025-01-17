@@ -1,0 +1,38 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { getLocalizedPathname } from '@/lib/i18n'
+
+/**
+ * Link component that localizes internal `href` pathnames based on the current locale.
+ */
+interface Props extends HTMLAttributes<'a'> {
+  href: string
+  class?: string
+}
+
+const { href, class: className, ...restProps } = Astro.props
+
+const isInternal = href.startsWith('/') || href.startsWith('#') || href === ''
+const slashHref = isInternal ? getLocalizedPathname(Astro.currentLocale, href) : href
+---
+
+<a
+  href={slashHref}
+  class={className}
+  {...restProps}
+>
+  <slot />
+</a>
+
+<style>
+  a {
+    display: inline-block;
+    text-decoration-line: underline;
+    text-underline-offset: 3px;
+    transition-property: color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--gray-20);
+  }
+</style>
