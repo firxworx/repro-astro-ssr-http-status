@@ -1,11 +1,44 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from '@/layouts/Layout.astro'
+import { applySlashRule } from '@/lib/slashes'
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const safeLinks = ['/duplicate/', '/fr/duplicate/'].map((link) => applySlashRule(link))
+const reproLinks = ['/about/', '/fr/about/'].map((link) => applySlashRule(link))
 ---
 
 <Layout>
-	<Welcome />
+  <div class="index-page">
+    <p>For the following only the file <code>src/pages/[locale]/about.astro</code> exists:</p>
+    <ul>
+      {reproLinks.map((href) => (
+        <li><a href={href}>{href}</a></li>
+      ))}
+    </ul>
+    <p>For the following <code>duplicate.astro</code> exists under <code>src/pages/</code> and <code>src/pages/[locale]/</code>.</p>
+    <ul>
+      {safeLinks.map((href) => (
+        <li><a href={href}>{href}</a></li>
+      ))}
+    </ul>
+  </div>
 </Layout>
+
+<style>
+  .index-page {
+    display: grid;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  li {
+  }
+</style>

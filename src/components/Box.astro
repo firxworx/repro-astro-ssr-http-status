@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { cx } from '@/lib/styles'
+
+export interface Props extends HTMLAttributes<'div'> {
+  heading?: string
+  class?: string
+}
+
+const { heading, class: className, ...restProps } = Astro.props
+---
+
+<div class={cx('box', className)} {...restProps}>
+  {heading ? <h2>{heading}</h2> : null}
+  <slot />
+</div>
+
+<style>
+  .box {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 36rem;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eaeaea;
+    margin: 0 auto;
+
+    text-align: center;
+  }
+
+  .box > h2 {
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  .box:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+</style>

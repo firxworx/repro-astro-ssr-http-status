@@ -1,38 +1,34 @@
-# Astro Starter Kit: Basics
+# Astro SSR Fault HTTP Status Reproduction
 
-```sh
-npm create astro@latest -- --template basics
-```
+2025-01-16 - `astro-ssr-wrong-http-status-repro`
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Issue
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### Summary
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+Middleware uses `context.rewrite(...)` to attempt matching a different route pattern.
 
-## 🚀 Project Structure
+If the match is successful then the resulting page is returned to the client but still has the wrong HTTP response type.
 
-Inside of your Astro project, you'll see the following folders and files:
+So far on this minimal example with latest versions the issue is not reproducible.
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+The issue occurred on a project with minimal integrations. Those will be added back in branches to see if the issue can be reproduced.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+### Scenario
 
-## 🧞 Commands
+Middleware conditionally responds to `context.routePattern` value `/404`.
 
-All commands are run from the root of the project, from a terminal:
+If the request `url.pathname` meets certain conditions then it attempts `context.rewrite(...)` to try matching for the pathname under the dynamic route path `src/pages/[locale]`.
+
+In the middleware if a match is found then the `Response` obtained from the awaited `context.rewrite(...)` call has HTTP status 200.
+
+If the middleware returns this response the client/browser receives a 404 status even though the page was rendered.
+
+## Commands
+
+This repo originated from the template _Astro Starter Kit: Basics_.
+
+Run commands from project root.
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
@@ -42,7 +38,3 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
