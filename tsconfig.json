@@ -3,11 +3,13 @@
   "compilerOptions": {
     "strict": true,
     "strictNullChecks": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "exactOptionalPropertyTypes": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "exactOptionalPropertyTypes": false,
     "types": ["@types/react", "@types/react-dom"]
   },
   "include": [".astro/types.d.ts", "**/*"],
