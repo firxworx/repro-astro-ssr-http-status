@@ -7,6 +7,7 @@ import { defineMiddleware } from 'astro:middleware'
 import { applySlashRule } from '@/lib/slashes'
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/config'
 import { findLocalePathPrefix, isSupportedLocale } from '@/lib/i18n'
+import { initI18nextServer } from '@/lib/server/i18next.server'
 
 const moduleName = basename(fileURLToPath(import.meta.url))
 const log = (message: string, ...data: Parameters<typeof console.log>) =>
@@ -19,6 +20,9 @@ const log = (message: string, ...data: Parameters<typeof console.log>) =>
  * https://docs.astro.build/en/guides/routing/#route-priority-order
  */
 export const i18nMiddleware = defineMiddleware(async (ctx, next) => {
+  const i18next = await initI18nextServer()
+  await i18next.changeLanguage(ctx.currentLocale ?? DEFAULT_LOCALE)
+
   log(`path: ${ctx.url.pathname} routePattern: ${ctx.routePattern}`)
 
   if (isIndexRequest(ctx)) {
