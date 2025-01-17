@@ -23,7 +23,8 @@
     "react-dom": "^19.0.0",
     "react-error-boundary": "^5.0.0",
     "react-i18next": "^15.4.0",
-    "ufo": "^1.5.4"
+    "ufo": "^1.5.4",
+    "vite": "^6.0.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
