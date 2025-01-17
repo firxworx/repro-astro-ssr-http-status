@@ -1,16 +1,25 @@
 ---
-import background from '../assets/background.svg'
+import background from '@/assets/background.svg'
 import Box from '@/components/Box.astro'
+import { DEFAULT_LOCALE } from '@/config'
+
+import { getLocaleTextDirection } from '@/lib/i18n'
 
 export interface Props {
   heading?: string
 }
 
 const { heading } = Astro.props
+
+if (Astro.currentLocale) {
+  console.warn('WARN: Astro.currentLocale is undefined.')
+}
+
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale} dir={getLocaleTextDirection(locale)}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
