@@ -5,9 +5,13 @@ import background from '@/assets/background.svg'
 import Box from '@/components/Box.astro'
 import { getLocaleHrefLangs, getLocaleTextDirection } from '@/lib/i18n'
 import { DEFAULT_LOCALE, IS_PRODUCTION } from '@/config'
+import { applySlashRule } from '@/lib/slashes'
 
 export interface Props {
   heading?: string
+  meta?: {
+    canonicalUrl?: string
+  }
 }
 
 if (!IS_PRODUCTION && !Astro.currentLocale) {
@@ -15,15 +19,18 @@ if (!IS_PRODUCTION && !Astro.currentLocale) {
 }
 
 const { pathname } = Astro.url
-const { heading } = Astro.props
+const { heading, meta } = Astro.props
 
 const locale = Astro.currentLocale ?? DEFAULT_LOCALE
 const textDirection = getLocaleTextDirection(locale)
+const hrefLangs = getLocaleHrefLangs(pathname)
 
 // considering our own implementation to resolve locale from pathname
 // const locale = getLocaleFromPathname(pathname)
 
-const hrefLangs = getLocaleHrefLangs(pathname)
+const canonicalUrl =
+  (meta?.canonicalUrl ? applySlashRule(meta.canonicalUrl) : undefined) ||
+  new URL(Astro.url.pathname, Astro.site).toString()
 ---
 
 <!doctype html>
@@ -31,7 +38,10 @@ const hrefLangs = getLocaleHrefLangs(pathname)
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+
+    <link rel="canonical" href={canonicalUrl} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro Issue Reproduction</title>
     {
