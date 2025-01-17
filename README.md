@@ -1,6 +1,6 @@
 # Astro SSR Fault HTTP Status Reproduction
 
-2025-01-16 - `astro-ssr-wrong-http-status-repro`
+2025-01-16 - `repro-astro-ssr-http-status`
 
 ## Issue
 

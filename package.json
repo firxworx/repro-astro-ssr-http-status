@@ -1,5 +1,5 @@
 {
-  "name": "astro-ssr-wrong-http-status-repro",
+  "name": "repro-astro-ssr-http-status",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
