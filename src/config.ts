@@ -5,16 +5,14 @@ export const SITE_URL = import.meta.env.SITE
 export const IS_PRODUCTION = import.meta.env.PROD
 export const IS_DEVELOPMENT = import.meta.env.DEV
 
-export const DEFAULT_LOCALE = 'en' as const
-export const SUPPORTED_LOCALES = ['en', 'fr'] as const
-export const PREFIX_DEFAULT_LOCALE: boolean = false
+export const DEFAULT_LOCALE = __DEFAULT_LOCALE__
+export const SUPPORTED_LOCALES: readonly string[] = __SUPPORTED_LOCALES__
+export const PREFIX_DEFAULT_LOCALE: boolean = __PREFIX_DEFAULT_LOCALE__
 
 /**
  * Astro `trailingSlash` config option as exported by vite global set in `astro.config.ts`.
  */
 export const TRAILING_SLASH: AstroUserConfig['trailingSlash'] = __TRAILING_SLASH__
-
-console.log('CLIENT SIDE TRAILNG SLASH', TRAILING_SLASH)
 
 /**
  * Must match `defaultLocale` config option in `astro.config.ts`.
