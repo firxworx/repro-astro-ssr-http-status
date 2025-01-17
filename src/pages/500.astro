@@ -1,0 +1,15 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { getErrorMessage } from '@/lib/errors'
+
+interface Props {
+  error: unknown
+}
+
+const { error } = Astro.props
+const errorMessage = getErrorMessage(error, { fallback: 'Unexpected server error.' })
+---
+
+<Layout heading="Server Error">
+  <div>{errorMessage}</div>
+</PageLayout>
