@@ -1,9 +1,10 @@
 ---
+import Link from '@/components/Link.astro'
 import { applySlashRule } from '@/lib/slashes'
 
-const indexLinks = ['/', '/fr/'].map((link) => applySlashRule(link))
-const safeLinks = ['/duplicate/', '/fr/duplicate/'].map((link) => applySlashRule(link))
 const reproLinks = ['/about/', '/fr/about/'].map((link) => applySlashRule(link))
+// const dupeLinks = ['/duplicate/', '/fr/duplicate/'].map((link) => applySlashRule(link))
+const indexLinks = ['/', '/fr/'].map((link) => applySlashRule(link))
 ---
 
 <div class="intro-page">
@@ -14,18 +15,45 @@ const reproLinks = ['/about/', '/fr/about/'].map((link) => applySlashRule(link))
       <li><a href={href}>{href}</a></li>
     ))}
   </ul>
-  <h3>Duplicate (Fixed + Dynamic) Pages</h3>
+
+  <h3>App Pages</h3>
+
+  <h4>Supported Routes</h4>
   <p>For the following <code>duplicate.astro</code> exists under <code>src/pages/</code> and <code>src/pages/[locale]/</code>.</p>
   <ul>
-    {safeLinks.map((href) => (
+    <li><Link href="/app/settings/">/app/settings/</Link></li>
+    <li><Link href="/app/">/app/</Link></li>
+    <li><Link href="/fr/app/settings/">/fr/app/settings/</Link></li>
+    <li><Link href="/fr/app/">/fr/app/</Link></li>
+  </ul>
+  <h4>Naughty Routes</h4>
+  <ul>
+    <li><Link href="/app/dne/">/app/dne/</Link></li>
+    <li><Link href="/settings/">/settings/</Link></li>
+    <li><Link href="/xx/settings/">/xx/settings/</Link></li>
+    <li><Link href="/i/am/not/a/valid/path/">/i/am/not/a/valid/path/</Link></li>
+    <li><Link href="/en/index/">/en/index/</Link></li>
+    <li><Link href="/en/">/en/</Link></li>
+  </ul>
+
+  <!-- <h3>Duplicate (Fixed + Dynamic) Pages</h3>
+  <p>For the following <code>duplicate.astro</code> exists under <code>src/pages/</code> and <code>src/pages/[locale]/</code>.</p>
+  <ul>
+    {dupeLinks.map((href) => (
       <li><a href={href}>{href}</a></li>
     ))}
-  </ul>
-  <p>Index page links:</p>
+  </ul> -->
+  <h3>Index Routes (Fixed + Dynamic):</h3>
   <ul>
     {indexLinks.map((href) => (
       <li><a href={href}>{href}</a></li>
     ))}
+  </ul>
+  <h3>Example Pages (Localized Href Pathnames)</h3>
+  <ul>
+    <li><a href="/no/page/exists/for/this/">/no/page/exists/for/this/</a></li>
+    <li><a href="/also/very-invalid/">/also/very-invalid/</a></li>
+    <!-- <li><Link href={getLocalizedPathname('')}></Link></li> -->
   </ul>
 </div>
 
