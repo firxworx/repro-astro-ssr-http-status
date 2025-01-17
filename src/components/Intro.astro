@@ -1,0 +1,56 @@
+---
+import { applySlashRule } from '@/lib/slashes'
+
+const indexLinks = ['/', '/fr/'].map((link) => applySlashRule(link))
+const safeLinks = ['/duplicate/', '/fr/duplicate/'].map((link) => applySlashRule(link))
+const reproLinks = ['/about/', '/fr/about/'].map((link) => applySlashRule(link))
+---
+
+<div class="intro-page">
+  <h3>Dynamic Pages</h3>
+  <p>For the following only the file <code>src/pages/[locale]/about.astro</code> exists:</p>
+  <ul>
+    {reproLinks.map((href) => (
+      <li><a href={href}>{href}</a></li>
+    ))}
+  </ul>
+  <h3>Duplicate (Fixed + Dynamic) Pages</h3>
+  <p>For the following <code>duplicate.astro</code> exists under <code>src/pages/</code> and <code>src/pages/[locale]/</code>.</p>
+  <ul>
+    {safeLinks.map((href) => (
+      <li><a href={href}>{href}</a></li>
+    ))}
+  </ul>
+  <p>Index page links:</p>
+  <ul>
+    {indexLinks.map((href) => (
+      <li><a href={href}>{href}</a></li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .intro-page {
+    display: grid;
+    gap: 1rem;
+    text-align: left;
+  }
+
+  h4 {
+    margin: 0 0 0.5rem;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  li > a {
+    display: block;
+    padding: 0.25rem 0.5rem;
+  }
+</style>

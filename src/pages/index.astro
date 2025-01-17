@@ -1,44 +1,10 @@
 ---
 import Layout from '@/layouts/Layout.astro'
-import { applySlashRule } from '@/lib/slashes'
+import Intro from '@/components/Intro.astro'
 
-const safeLinks = ['/duplicate/', '/fr/duplicate/'].map((link) => applySlashRule(link))
-const reproLinks = ['/about/', '/fr/about/'].map((link) => applySlashRule(link))
+// Astro and integrations generally require a `src/pages/index.astro` file to be present.
 ---
 
-<Layout>
-  <div class="index-page">
-    <p>For the following only the file <code>src/pages/[locale]/about.astro</code> exists:</p>
-    <ul>
-      {reproLinks.map((href) => (
-        <li><a href={href}>{href}</a></li>
-      ))}
-    </ul>
-    <p>For the following <code>duplicate.astro</code> exists under <code>src/pages/</code> and <code>src/pages/[locale]/</code>.</p>
-    <ul>
-      {safeLinks.map((href) => (
-        <li><a href={href}>{href}</a></li>
-      ))}
-    </ul>
-  </div>
+<Layout heading="Index Page (Root)">
+  <Intro />
 </Layout>
-
-<style>
-  .index-page {
-    display: grid;
-    gap: 1rem;
-    text-align: left;
-  }
-
-  p {
-    margin: 0;
-  }
-
-  ul {
-    margin: 0;
-    padding: 0 1rem;
-  }
-
-  li {
-  }
-</style>
