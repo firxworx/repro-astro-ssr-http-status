@@ -1,6 +1,12 @@
 import type { AstroUserConfig } from 'astro'
-import { defineConfig } from 'astro/config'
+import { defineConfig, sharpImageService, passthroughImageService } from 'astro/config'
+import { loadEnv } from 'vite'
+
 import node from '@astrojs/node'
+import react from '@astrojs/react'
+
+const ENV = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '')
+const IS_PRODUCTION = ENV.NODE_ENV === 'production'
 
 const SITE_URL = 'http://localhost:4321'
 
@@ -41,6 +47,14 @@ export default defineConfig({
       prefixDefaultLocale: PREFIX_DEFAULT_LOCALE,
     },
   },
+  image: {
+    service: IS_PRODUCTION ? sharpImageService() : passthroughImageService(),
+  },
+  integrations: [
+    react({
+      experimentalReactChildren: true,
+    }),
+  ],
   vite: {
     // define vite global constants to replace with hardcoded values during build
     define: {
