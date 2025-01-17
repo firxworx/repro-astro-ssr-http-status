@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, PREFIX_DEFAULT_LOCALE, SITE_URL, SUPPORTED_LOCALES } from '@/config'
+import { DEFAULT_LOCALE, IS_PRODUCTION, PREFIX_DEFAULT_LOCALE, SITE_URL, SUPPORTED_LOCALES } from '@/config'
 import { applySlashRule, ensureLeadingSlash } from '@/lib/slashes'
 
 export type LocaleTextDirection = 'ltr' | 'rtl'
@@ -8,11 +8,7 @@ export function isDefaultLocale(input: unknown): input is string {
 }
 
 export function isSupportedLocale(input: unknown): input is string {
-  return (
-    typeof input === 'string' &&
-    // safe cast as array is not mutated
-    (SUPPORTED_LOCALES as unknown as string[]).includes(input)
-  )
+  return typeof input === 'string' && SUPPORTED_LOCALES.includes(input)
 }
 
 /**
@@ -71,9 +67,6 @@ export function getLocaleHrefLangs(pathname: string): { locale: string; href: st
       isDefaultLocale(locale) && !PREFIX_DEFAULT_LOCALE ? virginPathname : `/${locale}${virginPathname}`,
     )
 
-    console.log('input pathname: ', pathname)
-    console.log('localizedPathname', localizedPathname)
-
     const url = new URL(localizedPathname, SITE_URL)
     return { locale, href: url.toString() }
   })
@@ -111,6 +104,39 @@ export function getLocaleFromPathname(pathname: string): string {
   }
 
   const firstSegment = pathname.split('/')?.[1] ?? ''
-
   return !!firstSegment && isSupportedLocale(firstSegment) ? firstSegment : DEFAULT_LOCALE
+}
+
+/**
+ * Return the locale obtained from the first pathname segment (locale prefix) if it is recognized
+ * as a supported locale. Otherwise returns `undefined`.
+ */
+export function findLocalePathPrefix(pathname: string): string | undefined {
+  const firstSegment = pathname.split('/')?.[1] ?? ''
+  return !!firstSegment && isSupportedLocale(firstSegment) ? `/${firstSegment}` : undefined
+}
+
+/**
+ * Return the input pathname including locale path prefix for the given locale.
+ * Respects the `prefixDefaultLocale` configuration and applies `trailingSlash` rule.
+ *
+ * @throws {Error} in development if target locale is not supported.
+ */
+export function getLocalizedPathname(targetLocale: string | undefined, pathname: string): string {
+  const locale = targetLocale ?? DEFAULT_LOCALE
+
+  if (!IS_PRODUCTION && !isSupportedLocale(locale)) {
+    throw new Error(`Unsupported locale: ${locale}`)
+  }
+
+  const virginPathname = stripLocalePrefixFromPathname(pathname)
+  const result = applySlashRule(
+    isDefaultLocale(locale) && !PREFIX_DEFAULT_LOCALE ? virginPathname : `/${locale}${virginPathname}`,
+  )
+
+  console.log(
+    `getLocalizedPathname: target locale ${targetLocale} resolved to ${locale} for pathname ${pathname} result: ${result}`,
+  )
+
+  return result
 }
