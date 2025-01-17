@@ -1,7 +1,9 @@
+import type { AstroUserConfig } from 'astro'
 import { defineConfig } from 'astro/config'
 import node from '@astrojs/node'
 
 const SITE_URL = 'http://localhost:4321'
+const TRAILING_SLASH: AstroUserConfig['trailingSlash'] = 'always'
 
 /**
  * @see https://astro.build/config
@@ -15,7 +17,7 @@ export default defineConfig({
   build: {
     format: 'directory',
   },
-  trailingSlash: 'always',
+  trailingSlash: TRAILING_SLASH,
   security: {
     checkOrigin: true,
   },
@@ -23,6 +25,7 @@ export default defineConfig({
     defaultStrategy: 'viewport',
   },
   i18n: {
+    // all values must be identical to `src/config.ts` used by the application
     defaultLocale: 'en',
     locales: ['en', 'fr'],
 
@@ -31,6 +34,11 @@ export default defineConfig({
       fallbackType: 'rewrite',
       prefixDefaultLocale: false,
       strategy: 'pathname',
+    },
+  },
+  vite: {
+    define: {
+      __TRAILING_SLASH__: JSON.stringify(TRAILING_SLASH),
     },
   },
 })
