@@ -1,4 +1,6 @@
 ---
+import { ClientRouter } from 'astro:transitions'
+
 import background from '@/assets/background.svg'
 import Box from '@/components/Box.astro'
 import { DEFAULT_LOCALE } from '@/config'
@@ -26,6 +28,7 @@ const locale = Astro.currentLocale ?? DEFAULT_LOCALE
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro Issue Reproduction</title>
+    <ClientRouter />
 	</head>
 	<body>
     <img id="background" src={background.src} alt="" fetchpriority="high" />
