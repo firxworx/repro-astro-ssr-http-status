@@ -16,4 +16,14 @@ export default defineConfig({
     format: 'directory',
   },
   trailingSlash: 'always',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'fr'],
+    routing: {
+      fallbackType: 'rewrite',
+      prefixDefaultLocale: false,
+      strategy: 'pathname',
+    },
+    // routing: 'manual',
+  },
 })
