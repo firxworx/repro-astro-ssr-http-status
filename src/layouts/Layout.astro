@@ -3,28 +3,31 @@ import { ClientRouter } from 'astro:transitions'
 
 import background from '@/assets/background.svg'
 import Box from '@/components/Box.astro'
-import { DEFAULT_LOCALE } from '@/config'
-import { getLocaleHrefLangs } from '@/lib/i18n'
-
-import { getLocaleTextDirection } from '@/lib/i18n'
+import { getLocaleHrefLangs, getLocaleTextDirection } from '@/lib/i18n'
+import { DEFAULT_LOCALE, IS_PRODUCTION } from '@/config'
 
 export interface Props {
   heading?: string
 }
 
-if (Astro.currentLocale) {
-  console.warn('WARN: Astro.currentLocale is undefined.')
+if (!IS_PRODUCTION && !Astro.currentLocale) {
+  throw new Error('Astro.currentLocale is `undefined`')
 }
 
 const { pathname } = Astro.url
 const { heading } = Astro.props
 
 const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const textDirection = getLocaleTextDirection(locale)
+
+// considering our own implementation to resolve locale from pathname
+// const locale = getLocaleFromPathname(pathname)
+
 const hrefLangs = getLocaleHrefLangs(pathname)
 ---
 
 <!doctype html>
-<html lang={locale} dir={getLocaleTextDirection(locale)}>
+<html lang={locale} dir={textDirection}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -45,7 +48,7 @@ const hrefLangs = getLocaleHrefLangs(pathname)
         <h1>Astro Issue Reproduction</h1>
       </header>
       <main>
-        <Box heading={heading}>
+        <Box heading={`${heading} [${locale}]`}>
           <slot />
         </Box>
       </main>
