@@ -1,0 +1,39 @@
+---
+import Layout from '@/layouts/Layout.astro'
+
+import AstroDemoI18n from '@/components/DemoI18n.astro'
+import { DemoI18n as ReactDemoI18n } from '@/components/DemoI18n'
+---
+
+<Layout heading="i18next Demo">
+  <div class="demo">
+    <h3>Astro + i18next</h3>
+    <p>The following is a server-rendered Astro component using <code>i18next.t()</code>:</p>
+    <div class="show">
+      <AstroDemoI18n />
+    </div>
+    <h3>React + i18next</h3>
+    <p>The following is loaded from a React component with <code>client:load</code> directive:</p>
+    <div class="show">
+      <ReactDemoI18n client:load />
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .demo {
+    display: grid;
+    gap: 0.25rem;
+    text-align: left;
+  }
+
+  .demo h3 {
+    margin: 1rem 0 0.5rem;
+  }
+
+  .show {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+  }
+</style>
