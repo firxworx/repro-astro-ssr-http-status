@@ -1,10 +1,22 @@
+import { DEFAULT_LOCALE, PREFIX_DEFAULT_LOCALE, SITE_URL, SUPPORTED_LOCALES } from '@/config'
+import { applySlashRule, ensureLeadingSlash } from '@/lib/slashes'
+
 export type LocaleTextDirection = 'ltr' | 'rtl'
+
+export function isDefaultLocale(input: unknown): input is string {
+  return typeof input === 'string' && input === DEFAULT_LOCALE
+}
+
+export function isSupportedLocale(input: unknown): input is string {
+  return (
+    typeof input === 'string' &&
+    // safe cast as array is not mutated
+    (SUPPORTED_LOCALES as unknown as string[]).includes(input)
+  )
+}
 
 /**
  * Array of RTL (right-to-left) BCP-47 (ISO) standard 2-character language codes.
- *
- * As this is a const assertion for typing you may need to cast `as string[]` if using this
- * constant as an array of strings (e.g. `RTL_LANGUAGES.includes(language as string)`).
  */
 export const RTL_LANGUAGES = ['ar', 'fa', 'he', 'ur', 'yi', 'ps', 'sd', 'dv'] as const
 
@@ -17,7 +29,7 @@ export const RTL_LANGUAGES = ['ar', 'fa', 'he', 'ur', 'yi', 'ps', 'sd', 'dv'] as
 export function getLocaleTextDirection(locale: string): LocaleTextDirection {
   const language = getLocaleLanguageCode(locale)
 
-  // this is a safe cast as we are not mutating the array
+  // safe cast as array is not mutated
   return (RTL_LANGUAGES as unknown as string[]).includes(language ?? '') ? 'rtl' : 'ltr'
 }
 
@@ -38,4 +50,67 @@ export function getLocaleLanguageCode(locale: string): string | undefined {
   }
 
   return result
+}
+
+/**
+ * Generate values for alternate langauge meta tags `hrefLang` and `href` attributes for a given pathname.
+ *
+ * ASTRO I18N WARNING:
+ *
+ * If middleware is rewriting /404 under `src/pages/*` to attempt route matches under `src/pages/[locale]/*`
+ * the `Astro.url.pathname` value will include the path prefix of the default locale _even if_
+ * `PREFIX_DEFAULT_LOCALE` is `false` _and_ the URL of the page in the browser has no locale prefix.
+ *
+ * @future consider base url from Astro config if site is not at root path.
+ */
+export function getLocaleHrefLangs(pathname: string): { locale: string; href: string }[] {
+  return SUPPORTED_LOCALES.map((locale) => {
+    const virginPathname = stripLocalePrefixFromPathname(pathname)
+
+    const localizedPathname = applySlashRule(
+      isDefaultLocale(locale) && !PREFIX_DEFAULT_LOCALE ? virginPathname : `/${locale}${virginPathname}`,
+    )
+
+    console.log('input pathname: ', pathname)
+    console.log('localizedPathname', localizedPathname)
+
+    const url = new URL(localizedPathname, SITE_URL)
+    return { locale, href: url.toString() }
+  })
+}
+
+/**
+ * Strip the locale pathname prefix (first segment) from the given pathname only if it is
+ * recognized as a supported locale; returns the remaining "virgin" pathname.
+ *
+ * Returns '/' for inputs '/' and ''. This function is agnostic to `prefixDefaultLocale`.
+ *
+ * Does not implement support for `code` alternatives or language ('fr')
+ * vs. locale ('fr-CA', 'fr-FR', etc.).
+ */
+export function stripLocalePrefixFromPathname(pathname: string): string {
+  if (pathname === '' || pathname === '/') {
+    return '/'
+  }
+
+  const prefixedLocale = SUPPORTED_LOCALES.find((locale) => pathname.startsWith(`/${locale}`))
+  return ensureLeadingSlash(prefixedLocale ? `/${pathname.replace(`/${prefixedLocale}`, '')}` : pathname)
+}
+
+/**
+ * Return the locale from first segment of a pathname only if it is recognized as a supported locale
+ * using a strict case-sensitive match, otherwise return the default locale.
+ *
+ * Returns the default locale if the pathname is root '/' or empty string ''.
+ *
+ * This case-sensitive strict match is more rigorous than Astro's internal `i18n` logic.
+ */
+export function getLocaleFromPathname(pathname: string): string {
+  if (pathname === '' || pathname === '/') {
+    return DEFAULT_LOCALE
+  }
+
+  const firstSegment = pathname.split('/')?.[1] ?? ''
+
+  return !!firstSegment && isSupportedLocale(firstSegment) ? firstSegment : DEFAULT_LOCALE
 }
