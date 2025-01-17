@@ -9,6 +9,12 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/config'
 // if there is a page match under src/pages/[locale]/*.astro the response status will be 200
 // yet when we return this response the browser receives a 404 status (!)
 
+// NOTE --
+//
+// If middleware rewrites a route (for pathname /about/ which does not have a corresponding page)
+// to successfully match /[locale]/about route (which does have a page) then Astro.url.pathname will
+// still include the default locale in the path prefix even if prefixDefaultLocale is false in the config.
+
 /**
  * Issue Reproduction
  */
