@@ -4,6 +4,7 @@ import { ClientRouter } from 'astro:transitions'
 import background from '@/assets/background.svg'
 import Box from '@/components/Box.astro'
 import { DEFAULT_LOCALE } from '@/config'
+import { getLocaleHrefLangs } from '@/lib/i18n'
 
 import { getLocaleTextDirection } from '@/lib/i18n'
 
@@ -11,13 +12,15 @@ export interface Props {
   heading?: string
 }
 
-const { heading } = Astro.props
-
 if (Astro.currentLocale) {
   console.warn('WARN: Astro.currentLocale is undefined.')
 }
 
+const { pathname } = Astro.url
+const { heading } = Astro.props
+
 const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const hrefLangs = getLocaleHrefLangs(pathname)
 ---
 
 <!doctype html>
@@ -28,10 +31,15 @@ const locale = Astro.currentLocale ?? DEFAULT_LOCALE
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>Astro Issue Reproduction</title>
+    {
+      hrefLangs.map(({ locale, href }) => (
+        <link rel="alternate" hreflang={locale} href={href} />
+      ))
+    }
     <ClientRouter />
 	</head>
 	<body>
-    <img id="background" src={background.src} alt="" fetchpriority="high" />
+    <img transition:persist id="background" src={background.src} fetchpriority="high" aria-hidden="true" />
     <div id="container">
       <header id="header">
         <h1>Astro Issue Reproduction</h1>
