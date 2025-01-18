@@ -15,7 +15,7 @@ import { DEFAULT_LOCALE, SUPPORTED_LOCALES, I18NEXT_NAMESPACES, I18NEXT_DEFAULT_
  *
  * Refer to docs for additional optional detection features including 'cookie' and 'localStorage'.
  */
-export function initializeI18next() {
+export function initI18nextClient() {
   if (!i18n.isInitialized) {
     i18n
       .use(HttpBackend)

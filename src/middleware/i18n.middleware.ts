@@ -7,7 +7,7 @@ import { defineMiddleware } from 'astro:middleware'
 import { applySlashRule } from '@/lib/slashes'
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/config'
 import { findLocalePathPrefix, isSupportedLocale } from '@/lib/i18n'
-import { initI18nextServer } from '@/lib/server/i18next.server'
+import { initI18nextServer } from '@/lib/server/i18next'
 
 const moduleName = basename(fileURLToPath(import.meta.url))
 const log = (message: string, ...data: Parameters<typeof console.log>) =>
