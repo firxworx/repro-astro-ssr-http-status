@@ -1,0 +1,123 @@
+---
+import { ClientRouter } from 'astro:transitions'
+
+import { getLocaleHrefLangs, getLocaleTextDirection } from '@/lib/i18n'
+import { DEFAULT_LOCALE, IS_PRODUCTION, DEFAULT_META } from '@/config'
+import { applySlashRule } from '@/lib/slashes'
+import type { PageLayoutMeta } from '@/lib/data/z-app-meta'
+
+export interface Props {
+  meta?: Partial<PageLayoutMeta> | undefined
+}
+
+if (!IS_PRODUCTION && !Astro.currentLocale) {
+  throw new Error('Astro.currentLocale is `undefined`')
+}
+
+const { pathname } = Astro.url
+const { meta } = Astro.props
+
+const locale = Astro.currentLocale ?? DEFAULT_LOCALE
+const textDirection = getLocaleTextDirection(locale)
+const hrefLangs = getLocaleHrefLangs(pathname)
+
+// considering our own implementation to resolve locale from pathname
+// const locale = getLocaleFromPathname(pathname)
+
+const title = meta?.title || DEFAULT_META.title
+const canonicalUrl =
+  (meta?.canonicalUrl ? applySlashRule(meta.canonicalUrl) : undefined) ||
+  new URL(applySlashRule(Astro.url.pathname), Astro.site).toString()
+---
+
+<!doctype html>
+<html lang={locale} dir={textDirection}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+
+    <link rel="canonical" href={canonicalUrl} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+    {
+      hrefLangs.map(({ locale, href }) => (
+        <link rel="alternate" hreflang={locale} href={href} />
+      ))
+    }
+    <ClientRouter />
+	</head>
+	<body>
+    <slot />
+  </body>
+</html>
+
+<script>
+  import { initI18nextClient } from "@/lib/client/i18next"
+  initI18nextClient()
+</script>
+
+<style is:global>
+  :root {
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+    --card-radius: 1rem;
+    --card-padding: 2rem;
+    --font-family: sans-serif;
+
+    --gray-10: hsl(258, 7%, 10%);
+    --gray-20: hsl(258, 7%, 20%);
+    --gray-30: hsl(258, 7%, 30%);
+    --gray-40: hsl(258, 7%, 40%);
+    --gray-50: hsl(258, 7%, 50%);
+    --gray-60: hsl(258, 7%, 60%);
+    --gray-70: hsl(258, 7%, 70%);
+    --gray-80: hsl(258, 7%, 80%);
+    --gray-90: hsl(258, 7%, 90%);
+    --black: #13151A;
+    --accent-light: #E0CCFA;
+  }
+
+  body {
+    margin: 0;
+		width: 100%;
+		height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+  }
+
+	#background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+		filter: blur(100px);
+	}
+
+  #container {
+    display: grid;
+    min-height: 100svh;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  #header {
+    padding: 1rem;
+    text-align: center;
+    letter-spacing: -0.025em;
+  }
+
+  #footer {
+    text-align: center;
+    font-weight: bolder;
+    font-size: 0.75rem;
+  }
+
+	main {
+    padding: 1.5rem;
+	}
+</style>
