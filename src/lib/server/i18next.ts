@@ -20,6 +20,7 @@ export const initI18nextServer = async (): Promise<typeof i18next> => {
       .use(initReactI18next)
       .init({
         debug: false,
+        preload: SUPPORTED_LOCALES,
         fallbackLng: DEFAULT_LOCALE,
         supportedLngs: SUPPORTED_LOCALES,
         defaultNS: I18NEXT_DEFAULT_NAMESPACE,
