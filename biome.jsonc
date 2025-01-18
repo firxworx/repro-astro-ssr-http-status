@@ -77,7 +77,7 @@
     }
   },
   "overrides": [
-    // astro configuration per astro-tips.dev
+    // astro overiddes recommended by astro-tips.dev
     {
       "include": ["*.astro", "*.svelte", "*.vue"],
       "linter": {
@@ -96,30 +96,6 @@
         "rules": {
           "complexity": {
             "useLiteralKeys": "off"
-          }
-        }
-      }
-    },
-    // computed keys are a common pattern with libraries such as clsx
-    {
-      "include": ["apps/**/*.tsx", "functions/**/*.ts", "packages/react-*/**"],
-      "linter": {
-        "rules": {
-          "complexity": {
-            "useLiteralKeys": "off"
-          }
-
-          // "nursery": {}
-        }
-      }
-    },
-    // false positive when putting routes in a tuple with a jsx component
-    {
-      "include": ["apps/**/router.tsx"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "useJsxKeyInIterable": "off"
           }
         }
       }
