@@ -72,5 +72,5 @@
     "pnpm-lock.yaml": true,
     "**/node_modules/*": true,
     "tmp/*": true
-  },
+  }
 }
